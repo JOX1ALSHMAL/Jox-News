@@ -1,0 +1,43 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    الفروع : [ "الرئيسي" ]
+
+  # يسمح لك بتشغيل سير العمل هذا يدويًا من علامة التبويب "الإجراءات"
+  workflow_dispatch :
+
+# يحدد صلاحيات رمز GITHUB_TOKEN للسماح بالنشر على صفحات GitHub
+الأذونات :
+  المحتويات : اقرأ
+  الصفحات : اكتب
+  id-token : كتابة
+
+# السماح بنشر واحد متزامن فقط، مع تخطي عمليات التشغيل الموجودة في قائمة الانتظار بين عملية التشغيل الجارية وأحدث عملية تشغيل في قائمة الانتظار.
+# مع ذلك، لا تقم بإلغاء عمليات التشغيل الجارية لأننا نريد السماح لعمليات النشر الإنتاجية هذه بالانتهاء.
+التزامن :
+  المجموعة : "الصفحات"
+  إلغاء قيد التقدم : خطأ
+
+الوظائف :
+  # مهمة نشر واحدة لأننا نقوم بالنشر فقط
+  نشر :
+    بيئة :
+      الاسم : صفحات جيت هاب
+      عنوان URL : $ { { steps.deployment.outputs.page_url } }
+    يعمل على : أحدث إصدار من أوبونتو
+    ريس :
+      - الاسم : عملية الدفع
+        يستخدم : actions/checkout@v4
+      - الاسم : صفحات الإعداد
+        الاستخدامات : actions/configure-pages@v5
+      - الاسم : تحميل العنصر
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
