@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خارطة طريق الأمن السيبراني والهكر الأخلاقي الشاملة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        
+        /* Chart Container Styling per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* max-w-xl equivalent */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for internal divs */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Tab Transitions */
+        .tab-content {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .active-tab {
+            background-color: #0f172a; /* Slate 900 */
+            color: #ffffff;
+            border-right: 4px solid #10b981; /* Emerald 500 */
+        }
+        .inactive-tab {
+            background-color: #ffffff;
+            color: #475569;
+            border-right: 4px solid transparent;
+        }
+        .inactive-tab:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+    </style>
+    <!-- Chosen Palette: Slate (Neutral Foundation) with Emerald (Growth/Success) and Sky Blue (Tech/Data) accents. Background is warm neutral (Slate-50). -->
+    <!-- Application Structure Plan: A dashboard-style layout designed for progressive disclosure. 
+         1. 'Mission Control' (Header & Overview): Sets the context with data on market demand and salary to motivate the user.
+         2. 'The Path' (Interactive Roadmap): The core feature. A vertical tabbed interface allows users to focus on one phase at a time (Foundations -> Advanced) without overwhelming them.
+         3. 'Skill Matrix' (Radar Chart): Visualizes the balance between offensive and defensive skills.
+         4. 'Certifications & Resources': Organized lists to provide actionable next steps.
+         This structure transforms a linear "text wall" into an explorable journey. -->
+    <!-- Visualization & Content Choices:
+         1. Line Chart (Salary): Motivation -> Visualizes career growth potential -> Chart.js Line.
+         2. Doughnut Chart (Domains): Information -> Shows diversity of roles -> Chart.js Doughnut.
+         3. Interactive Roadmap (Tabs + Cards): Education -> Breaks complex curriculum into digestible chunks -> JS DOM Manipulation.
+         4. Radar Chart (Skills): Analysis -> Compares Red Team vs Blue Team requirements -> Chart.js Radar.
+         5. Resource Grid: Organization -> Filterable list of study materials -> JS Filtering. 
+         Confirming NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-slate-900 text-white py-12 px-4 shadow-lg">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">الدليل الشامل للأمن السيبراني</h1>
+            <p class="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                خارطة طريق تفاعلية من الصفر وحتى الاحتراف المتقدم في الهكر الأخلاقي والدفاع السيبراني.
+                <br>
+                <span class="text-emerald-400 text-sm font-bold mt-2 block">تحليل المسار • مصادر تعليمية • شهادات مهنية</span>
+            </p>
+        </div>
+    </header>
+
+    <!-- Intro & Market Data Section -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 py-8 space-y-12">
+        
+        <section id="market-insight" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-slate-800 mb-3 border-r-4 border-emerald-500 pr-4">نظرة عامة على السوق والفرص</h2>
+                <p class="text-slate-600 leading-relaxed text-lg">
+                    قبل البدء في التعلم، من الضروري فهم طبيعة المجال. يوضح هذا القسم العائد الاستثماري المتوقع لتعلم الأمن السيبراني، وتوزيع المجالات الفرعية. البيانات مبنية على متوسطات عالمية ومؤشرات الطلب الحالية، مما يبرز أهمية التخصص المزدوج (الهجوم والدفاع).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Salary Growth Chart -->
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex flex-col items-center">
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 w-full text-center">تطور الدخل السنوي المتوقع (بالدولار)</h3>
+                    <div class="chart-container">
+                        <canvas id="salaryChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-slate-400 mt-2">تقديرات بناءً على السوق العالمي والخليجي للمحترفين</p>
+                </div>
+
+                <!-- Domains Distribution Chart -->
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex flex-col items-center">
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 w-full text-center">توزيع مجالات العمل الرئيسية</h3>
+                    <div class="chart-container">
+                        <canvas id="domainsChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-slate-400 mt-2">نسبة الطلب الوظيفي حسب التخصص</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Core Roadmap Section -->
+        <section id="roadmap" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 md:p-8 border-b border-slate-100 bg-slate-50">
+                <h2 class="text-3xl font-bold text-slate-800 mb-3 border-r-4 border-blue-600 pr-4">المسار التعليمي التفاعلي</h2>
+                <p class="text-slate-600 leading-relaxed text-lg">
+                    تم تقسيم الرحلة إلى 5 مراحل رئيسية لضمان التدرج المنطقي. اختر المرحلة من القائمة الجانبية لاستعراض المواد التعليمية، الأدوات المطلوبة، والروابط المباشرة للتعلم. هذا التصميم يساعدك على التركيز على خطوة واحدة في كل مرة.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row min-h-[600px]">
+                <!-- Sidebar Navigation -->
+                <div class="lg:w-1/4 bg-slate-50 border-l border-slate-200 flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible custom-scroll" id="roadmapTabs">
+                    <!-- Tabs will be injected via JS -->
+                </div>
+
+                <!-- Content Area -->
+                <div class="lg:w-3/4 p-6 md:p-8 bg-white relative">
+                    <div id="roadmapContent" class="tab-content space-y-6">
+                        <!-- Content will be injected via JS -->
+                        <div class="flex items-center justify-center h-full text-slate-400">
+                            <p>جاري تحميل الخارطة...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Analysis Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2 border-r-4 border-purple-500 pr-4">تحليل المهارات: الأحمر ضد الأزرق</h2>
+                    <p class="text-slate-600 text-sm">
+                        مقارنة بين المهارات المطلوبة للفريق الأحمر (الهجومي) والفريق الأزرق (الدفاعي). المحترف الحقيقي يمتلك مزيجاً من الاثنين.
+                    </p>
+                </div>
+                <div class="chart-container mx-auto">
+                    <canvas id="skillsRadar"></canvas>
+                </div>
+            </div>
+
+            <!-- Certification Path -->
+            <div class="col-span-1 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 flex flex-col">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4 border-r-4 border-yellow-500 pr-4">مسار الشهادات</h2>
+                <p class="text-slate-600 text-sm mb-6">التسلسل المنطقي للحصول على الشهادات المهنية العالمية.</p>
+                
+                <div class="space-y-4 flex-grow relative">
+                    <!-- Vertical Line -->
+                    <div class="absolute right-4 top-2 bottom-2 w-0.5 bg-slate-200"></div>
+
+                    <!-- Cert Items -->
+                    <div class="relative flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-green-100 border-2 border-green-500 flex items-center justify-center font-bold text-green-700 z-10 text-xs">1</div>
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg flex-1 shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800">CompTIA Security+</h4>
+                            <p class="text-xs text-slate-500">البداية النظرية الشاملة</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 border-2 border-blue-500 flex items-center justify-center font-bold text-blue-700 z-10 text-xs">2</div>
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg flex-1 shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800">eJPT / CEH Practical</h4>
+                            <p class="text-xs text-slate-500">أولى الخطوات العملية</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-red-100 border-2 border-red-500 flex items-center justify-center font-bold text-red-700 z-10 text-xs">3</div>
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg flex-1 shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800">OSCP</h4>
+                            <p class="text-xs text-slate-500">المعيار الذهبي للاختراق</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 border-2 border-purple-500 flex items-center justify-center font-bold text-purple-700 z-10 text-xs">4</div>
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg flex-1 shadow-sm hover:shadow-md transition">
+                            <h4 class="font-bold text-slate-800">CISSP / OSEP</h4>
+                            <p class="text-xs text-slate-500">إدارة أو اختراق متقدم</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Vault -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2 border-r-4 border-sky-500 pr-4">مكتبة المصادر والأدوات</h2>
+                    <p class="text-slate-600 text-sm">روابط مباشرة ومنصات معتمدة للتدريب العملي والنظري.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="filterResources('all')" class="px-4 py-2 text-sm rounded-full bg-slate-800 text-white hover:bg-slate-700 transition">الكل</button>
+                    <button onclick="filterResources('platform')" class="px-4 py-2 text-sm rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition">منصات تدريب</button>
+                    <button onclick="filterResources('tool')" class="px-4 py-2 text-sm rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition">أدوات</button>
+                    <button onclick="filterResources('course')" class="px-4 py-2 text-sm rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition">دورات</button>
+                </div>
+            </div>
+
+            <div id="resourcesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Resources injected via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-8">
+        <p class="text-sm">تم إنشاء خارطة الطريق هذه لمساعدة الباحثين والطلاب العرب في مجال الأمن السيبراني.</p>
+        <p class="text-xs mt-2">© 2024 Cybersecurity Roadmap Dashboard</p>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // --- Data Storage ---
+
+        const roadmapPhases = [
+            {
+                id: 'phase1',
+                title: 'المرحلة 1: التأسيس الصلب',
+                duration: '1-3 أشهر',
+                description: 'لا يمكن حماية ما لا تفهمه. هذه المرحلة تبني الأساس التقني الضروري قبل لمس أي أداة اختراق.',
+                topics: [
+                    'أنظمة التشغيل (Windows Internals & Linux Basics)',
+                    'الشبكات (OSI Model, TCP/IP, DNS, HTTP)',
+                    'أساسيات البرمجة (Python, Bash Scripting)',
+                    'مفاهيم الحاسب (Hardware, Virtualization)'
+                ],
+                actions: [
+                    'تثبيت نظام Linux (يفضل Ubuntu أو Kali كآلة افتراضية).',
+                    'تعلم أوامر الطرفية (Terminal) الأساسية.',
+                    'كتابة سكربت Python بسيط لأتمتة مهمة يومية.',
+                    'فهم كيفية انتقال البيانات عبر الشبكة باستخدام Wireshark.'
+                ],
+                links: [
+                    { name: 'كورس الشبكات (Network+)', url: '#' },
+                    { name: 'أساسيات Linux (Red Hat)', url: '#' },
+                    { name: 'Python for Beginners', url: '#' }
+                ]
+            },
+            {
+                id: 'phase2',
+                title: 'المرحلة 2: أساسيات الأمن',
+                duration: '2-4 أشهر',
+                description: 'فهم مفاهيم الأمن، التشفير، وكيفية تأمين الأنظمة والشبكات.',
+                topics: [
+                    'CIA Triad (Confidentiality, Integrity, Availability)',
+                    'التشفير (Symmetric vs Asymmetric, Hashing)',
+                    'أمان الشبكات (Firewalls, VPNs, IDS/IPS)',
+                    'إدارة الهوية والصلاحيات (IAM, Active Directory)'
+                ],
+                actions: [
+                    'دراسة منهج Security+ (حتى لو لم تدخل الاختبار).',
+                    'تجربة أدوات التشفير وفك التشفير الأساسية.',
+                    'إعداد جدار حماية بسيط (UFW on Linux).',
+                    'فهم أنواع الهجمات النظرية (Phishing, Malware types).'
+                ],
+                links: [
+                    { name: 'Professormesser Security+', url: 'https://www.professormesser.com/' },
+                    { name: 'Cybrary Free Courses', url: 'https://www.cybrary.it/' }
+                ]
+            },
+            {
+                id: 'phase3',
+                title: 'المرحلة 3: الهكر الأخلاقي (Red Team)',
+                duration: '3-6 أشهر',
+                description: 'بدء العمل الهجومي العملي. تعلم كيفية اكتشاف الثغرات واستغلالها بشكل قانوني.',
+                topics: [
+                    'جمع المعلومات (Reconnaissance - OSINT)',
+                    'فحص الشبكات (Scanning & Enumeration)',
+                    'استغلال الثغرات (Exploitation & Metasploit)',
+                    'اختراق تطبيقات الويب (OWASP Top 10)'
+                ],
+                actions: [
+                    'حل مختبرات CTF للمبتدئين (PicoCTF).',
+                    'استخدام أدوات مثل Nmap, Burp Suite, Metasploit.',
+                    'تعلم كيفية كتابة تقرير ثغرة (Vulnerability Report).',
+                    'البدء في مسار eJPT.'
+                ],
+                links: [
+                    { name: 'TryHackMe (Pre-Security)', url: 'https://tryhackme.com/' },
+                    { name: 'PortSwigger Web Security', url: 'https://portswigger.net/web-security' },
+                    { name: 'HackTheBox Academy', url: 'https://academy.hackthebox.com/' }
+                ]
+            },
+            {
+                id: 'phase4',
+                title: 'المرحلة 4: الدفاع والاستجابة (Blue Team)',
+                duration: 'مستمر',
+                description: 'تعلم كيفية اكتشاف الهجمات، تحليلها، والاستجابة للحوادث.',
+                topics: [
+                    'مراكز العمليات الأمنية (SOC Basics)',
+                    'تحليل السجلات (Log Analysis & SIEM)',
+                    'التحقيق الجنائي الرقمي (Digital Forensics)',
+                    'ذكاء التهديدات (Threat Intelligence)'
+                ],
+                actions: [
+                    'تعلم استخدام Splunk أو ELK Stack.',
+                    'تحليل حركة مرور خبيثة (Malware Traffic Analysis).',
+                    'تطبيق مسار "SOC Level 1" في TryHackMe.',
+                    'فهم إطار عمل MITRE ATT&CK.'
+                ],
+                links: [
+                    { name: 'LetsDefend (Blue Team)', url: 'https://letsdefend.io/' },
+                    { name: 'Blue Team Labs Online', url: 'https://blueteamlabs.online/' }
+                ]
+            },
+            {
+                id: 'phase5',
+                title: 'المرحلة 5: التخصص المتقدم',
+                duration: 'متقدم',
+                description: 'اختيار مسار دقيق والتعمق فيه للوصول لمستوى الخبير.',
+                topics: [
+                    'الهندسة العكسية (Reverse Engineering)',
+                    'تطوير الثغرات (Exploit Development)',
+                    'أمن السحابة (Cloud Security - AWS/Azure)',
+                    'أمن إنترنت الأشياء (IoT Security)'
+                ],
+                actions: [
+                    'تعلم لغة Assembly و C بعمق.',
+                    'الحصول على شهادة متقدمة مثل OSCP أو CISSP.',
+                    'المشاركة في برامج Bug Bounty الحقيقية.',
+                    'بناء مختبر منزلي متقدم (Home Lab).'
+                ],
+                links: [
+                    { name: 'OffSec (OSCP)', url: 'https://www.offsec.com/' },
+                    { name: 'SANS Institute', url: 'https://www.sans.org/' }
+                ]
+            }
+        ];
+
+        const resourcesData = [
+            { title: 'TryHackMe', type: 'platform', desc: 'أفضل منصة للمبتدئين، تعليم موجه ومختبرات سهلة.', icon: '🎓' },
+            { title: 'Hack The Box', type: 'platform', desc: 'للمتوسطين والمحترفين، أجهزة حقيقية للاختراق.', icon: '📦' },
+            { title: 'PortSwigger', type: 'platform', desc: 'المصدر الأول عالمياً لتعلم اختراق الويب.', icon: '🌐' },
+            { title: 'Kali Linux', type: 'tool', desc: 'نظام التشغيل القياسي للمختبرين الأمنيين.', icon: '🐉' },
+            { title: 'Burp Suite', type: 'tool', desc: 'أداة تحليل واعتراض طلبات الويب.', icon: '🐞' },
+            { title: 'Metasploit', type: 'tool', desc: 'إطار عمل لاستغلال الثغرات.', icon: '⚔️' },
+            { title: 'Wireshark', type: 'tool', desc: 'محلل بروتوكولات الشبكة.', icon: '🦈' },
+            { title: 'Coursera (IBM/Google)', type: 'course', desc: 'شهادات مهنية تأسيسية ممتازة.', icon: '📜' },
+            { title: 'Udemy (Zaid Sabih)', type: 'course', desc: 'دورات عملية عربية/إنجليزية قوية.', icon: '🎥' },
+            { title: 'OWASP Guide', type: 'course', desc: 'دليل شامل لأمن التطبيقات.', icon: '📖' },
+            { title: 'Nmap', type: 'tool', desc: 'أداة فحص الشبكات واستكشاف المنافذ.', icon: '🔍' },
+            { title: 'Ghidra', type: 'tool', desc: 'أداة هندسة عكسية من NSA.', icon: '🧩' }
+        ];
+
+        // --- UI Rendering Functions ---
+
+        function initRoadmap() {
+            const tabsContainer = document.getElementById('roadmapTabs');
+            const contentContainer = document.getElementById('roadmapContent');
+
+            // Render Tabs
+            roadmapPhases.forEach((phase, index) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-right p-4 text-sm font-medium transition-all duration-200 border-r-4 ${index === 0 ? 'active-tab' : 'inactive-tab'}`;
+                btn.innerText = phase.title;
+                btn.onclick = () => loadPhaseContent(index);
+                tabsContainer.appendChild(btn);
+            });
+
+            // Load Initial Content
+            loadPhaseContent(0);
+        }
+
+        function loadPhaseContent(index) {
+            const phase = roadmapPhases[index];
+            const contentContainer = document.getElementById('roadmapContent');
+            const tabs = document.getElementById('roadmapTabs').children;
+
+            // Update Tabs Style
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].className = `w-full text-right p-4 text-sm font-medium transition-all duration-200 border-r-4 ${i === index ? 'active-tab' : 'inactive-tab'}`;
+            }
+
+            // Update Content with Animation
+            contentContainer.style.opacity = '0';
+            
+            setTimeout(() => {
+                contentContainer.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-slate-100 pb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800">${phase.title}</h3>
+                            <span class="inline-block mt-2 px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">المدة المتوقعة: ${phase.duration}</span>
+                        </div>
+                        <div class="bg-slate-100 p-2 rounded-lg">
+                            <span class="text-3xl">🚀</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-slate-600 leading-relaxed text-lg">
+                        ${phase.description}
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                                <span>📚</span> المواضيع الأساسية
+                            </h4>
+                            <ul class="space-y-2">
+                                ${phase.topics.map(t => `<li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-1">•</span> ${t}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                                <span>⚡</span> خطوات عملية
+                            </h4>
+                            <ul class="space-y-2">
+                                ${phase.actions.map(a => `<li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-blue-500 mt-1">✓</span> ${a}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <h4 class="font-bold text-slate-800 mb-3">🔗 روابط ومصادر مقترحة</h4>
+                        <div class="flex flex-wrap gap-3">
+                            ${phase.links.map(link => `
+                                <a href="${link.url}" target="_blank" class="px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg hover:border-emerald-500 hover:text-emerald-600 transition flex items-center gap-2 shadow-sm">
+                                    <span>🔗</span> ${link.name}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                contentContainer.style.opacity = '1';
+            }, 150);
+        }
+
+        function renderResources(filter = 'all') {
+            const grid = document.getElementById('resourcesGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' ? resourcesData : resourcesData.filter(r => r.type === filter);
+
+            filtered.forEach(res => {
+                const el = document.createElement('div');
+                el.className = 'bg-slate-50 border border-slate-200 p-4 rounded-xl hover:shadow-md transition group';
+                
+                let typeColor = 'bg-gray-200 text-gray-700';
+                if(res.type === 'platform') typeColor = 'bg-purple-100 text-purple-700';
+                if(res.type === 'tool') typeColor = 'bg-orange-100 text-orange-700';
+                if(res.type === 'course') typeColor = 'bg-blue-100 text-blue-700';
+
+                let typeLabel = res.type === 'platform' ? 'منصة' : (res.type === 'tool' ? 'أداة' : 'دورة');
+
+                el.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-3xl group-hover:scale-110 transition duration-300">${res.icon}</span>
+                        <span class="text-xs px-2 py-1 rounded-md font-bold ${typeColor}">${typeLabel}</span>
+                    </div>
+                    <h4 class="font-bold text-slate-800 mb-1">${res.title}</h4>
+                    <p class="text-xs text-slate-500 leading-snug">${res.desc}</p>
+                `;
+                grid.appendChild(el);
+            });
+        }
+
+        function filterResources(type) {
+            // Update active button style (simplified)
+            renderResources(type);
+        }
+
+        // --- Charts Implementation ---
+
+        function initCharts() {
+            // 1. Salary Chart (Line)
+            const ctxSalary = document.getElementById('salaryChart').getContext('2d');
+            new Chart(ctxSalary, {
+                type: 'line',
+                data: {
+                    labels: ['مبتدئ', 'متوسط (2-4 سنوات)', 'خبير (5+ سنوات)', 'قائد فريق'],
+                    datasets: [{
+                        label: 'متوسط الراتب السنوي ($)',
+                        data: [45000, 75000, 110000, 150000],
+                        borderColor: '#10b981', // Emerald 500
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#10b981',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: false, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Domains Chart (Doughnut)
+            const ctxDomains = document.getElementById('domainsChart').getContext('2d');
+            new Chart(ctxDomains, {
+                type: 'doughnut',
+                data: {
+                    labels: ['أمن الويب/التطبيقات', 'أمن الشبكات', 'الاستجابة للحوادث (SOC)', 'الامتثال والحوكمة (GRC)', 'أمن السحابة'],
+                    datasets: [{
+                        data: [25, 20, 30, 10, 15],
+                        backgroundColor: [
+                            '#3b82f6', // Blue
+                            '#8b5cf6', // Violet
+                            '#ef4444', // Red (Defensive high demand)
+                            '#f59e0b', // Amber
+                            '#10b981'  // Emerald
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'right', labels: { font: { family: 'Tajawal' }, boxWidth: 12 } }
+                    }
+                }
+            });
+
+            // 3. Skills Radar Chart
+            const ctxRadar = document.getElementById('skillsRadar').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['البرمجة', 'الشبكات', 'أنظمة التشغيل', 'تحليل البيانات', 'الهندسة الاجتماعية', 'التقارير'],
+                    datasets: [{
+                        label: 'فريق أحمر (هجومي)',
+                        data: [80, 70, 90, 40, 90, 60],
+                        fill: true,
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)', // Red
+                        borderColor: '#ef4444',
+                        pointBackgroundColor: '#ef4444',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ef4444'
+                    }, {
+                        label: 'فريق أزرق (دفاعي)',
+                        data: [50, 90, 80, 90, 40, 80],
+                        fill: true,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', // Blue
+                        borderColor: '#3b82f6',
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: { borderWidth: 3 }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: {
+                                font: { family: 'Tajawal', size: 12 },
+                                color: '#64748b'
+                            },
+                            ticks: { display: false, backdropColor: 'transparent' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { family: 'Tajawal' } } }
+                    }
+                }
+            });
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initRoadmap();
+            renderResources();
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>
